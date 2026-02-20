@@ -1,0 +1,22 @@
+services:
+  smtp-gate-sender:
+    build: .
+    container_name: smtp-gate-sender
+    ports:
+      - "8885:8885"
+    environment:
+      ASPNETCORE_URLS: http://+:8885
+      # SMTP inside docker network -> MailHog
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - mailhog
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: smtp-gate-sender-mailhog
+    ports:
+      - "8884:8025"   # Mail UI
+      - "8883:1025"   # SMTP
